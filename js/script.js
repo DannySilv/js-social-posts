@@ -152,13 +152,13 @@ function likeBtn(event) {
     const thisPost = parseInt(this.dataset.postid);
     const likeCounter = document.getElementById(`like-counter-${thisPost}`);
     if (!postsLiked.includes(thisPost)) {
-        this.classList.add('like-button--liked');
+        this.classList.add("like-button--liked");
         postsLiked.push(thisPost);
         likeCounter.textContent = parseInt(likeCounter.textContent) + 1;
     // BONUS 3
     } else {
-        this.classList.remove('like-button--liked');
-        postsLiked = postsLiked.filter((element) => element !== thisPost);
+        this.classList.remove("like-button--liked");
+        postsLiked = postsLiked.filter(element => element !== thisPost);
         likeCounter.textContent = parseInt(likeCounter.textContent) - 1;
     }
     console.log(postsLiked);
