@@ -78,57 +78,90 @@ const posts = [
 ];
 
 // MILESTONE 2
-genPost(posts);
+const postContainer = document.querySelector(".posts-list");
+let postsLiked = []; // -> FOR MILESTONE 3
 
-// MILESTONE 3
-const postsLiked = [];
+posts.forEach((element) => { 
+    postContainer.append(genPost(element));
+});
 
-
-
-
-// FUNCTIONS
 // FUNCTION-1 POST-GENERATOR (FOR MILESTONE 2)
 /**
  * Description -> It generates the post in HTML
- * @param {any} array -> Input the array of elements for which we are generating a post
+ * @param {any} element -> Input the element for which we are generating a post
+ * @returns {any} -> The post
+ */
+function genPost(element) {
+    const post = document.createElement("div")
+    post.classList.add("post");
+
+    const postHeader = document.createElement("div");
+    postHeader.classList.add("post__header");
+    postHeader.innerHTML = `
+    <div class="post-meta">                    
+        <div class="post-meta__icon">
+            <img class="profile-pic" src="${element.author.image}" alt="${element.author.name}">                    
+        </div>
+        <div class="post-meta__data">
+            <div class="post-meta__author">${element.author.name}</div>
+            <div class="post-meta__time">${element.created}</div>
+        </div>                    
+    </div>`
+    post.append(postHeader);
+
+    const postText = document.createElement("div");
+    postText.classList.add("post__text");
+    postText.textContent = element.content;
+    post.append(postText);
+
+    const postImage = document.createElement("div");
+    postImage.classList.add("post__image");
+    postImage.innerHTML = `
+    <img src="${element.media}" alt="">`
+    post.append(postImage);
+    
+    const postFooter = document.createElement("div");
+    postFooter.classList.add("post__footer")
+    postFooter.innerHTML = `
+    <div class="likes js-likes">
+        <div class="likes__cta">
+            <a class="like-button  js-like-button" href="#" data-postid="${element.id}">
+                <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
+                <span class="like-button__label">Mi Piace</span>
+            </a>
+        </div>
+        <div class="likes__counter">
+            Piace a <b id="like-counter-${element.id}" class="js-likes-counter">${element.likes}</b> persone
+        </div>
+    </div>`
+
+    postFooter.querySelector(".like-button").addEventListener("click", likeBtn)
+    post.append(postFooter);
+
+    return post;
+};
+
+// MILESTONE 3
+/**
+ * Description -> It changes the "Mi piace" button color and increase the likes counter if clicked, and it push the liked elements in the "postsLiked" array. If clicked again it return to default.  
+ * @param {any} event -> The event that starts this function
  * @returns {any}
  */
-function genPost(array) {
-    posts.forEach((element) => {
-        const postContainer = document.querySelector(".posts-list");
-
-        postContainer.innerHTML += `
-        <div class="post">
-            <div class="post__header">
-                <div class="post-meta">                    
-                    <div class="post-meta__icon">
-                        <img class="profile-pic" src="${element.author.image}" alt="${element.author.name}">                    
-                    </div>
-                    <div class="post-meta__data">
-                        <div class="post-meta__author">${element.author.name}</div>
-                        <div class="post-meta__time">${element.created}</div>
-                    </div>                    
-                </div>
-            </div>
-            <div class="post__text">${element.content}</div>
-            <div class="post__image">
-                <img src="${element.media}" alt="">
-            </div>
-            <div class="post__footer">
-                <div class="likes js-likes">
-                    <div class="likes__cta">
-                        <a class="like-button  js-like-button" href="#" data-postid="1">
-                            <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
-                            <span class="like-button__label">Mi Piace</span>
-                        </a>
-                    </div>
-                    <div class="likes__counter">
-                        Piace a <b id="like-counter-1" class="js-likes-counter">${element.likes}</b> persone
-                    </div>
-                </div>
-            </div>
-        </div>`
-    });
+function likeBtn(event) {
+    event.preventDefault();
+    const thisPost = parseInt(this.dataset.postid);
+    const likeCounter = document.getElementById(`like-counter-${thisPost}`);
+    if (!postsLiked.includes(thisPost)) {
+        this.classList.add('like-button--liked');
+        postsLiked.push(thisPost);
+        likeCounter.textContent = parseInt(likeCounter.textContent) + 1;
+    // BONUS 3
+    } else {
+        this.classList.remove('like-button--liked');
+        postsLiked = postsLiked.filter((element) => element !== thisPost);
+        likeCounter.textContent = parseInt(likeCounter.textContent) - 1;
+    }
+    console.log(postsLiked);
 }
 
-// FUNCTION 2 LIKE-UTILITY(FOR MILESTONE 3)
+
