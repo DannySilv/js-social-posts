@@ -100,20 +100,32 @@ function genPost(element) {
     postHeader.innerHTML = `
     <div class="post-meta">                    
         <div class="post-meta__icon">
-            <img class="profile-pic" src="${element.author.image}" alt="${element.author.name}">                    
+                                
         </div>
         <div class="post-meta__data">
             <div class="post-meta__author">${element.author.name}</div>
             <div class="post-meta__time">${element.created}</div>
         </div>                    
     </div>`
+
+    // BONUS 2
+    postMetaIcon = postHeader.querySelector('.post-meta__icon');
+    if (element.author.image) {
+        postMetaIcon.innerHTML = `<img class="profile-pic" src="${element.author.image}" alt="${element.author.name}">`
+    } else {
+        let splitName = element.author.name.split(' ');
+        let nameInitials = splitName[0][0] + splitName[splitName.length -1][0];
+        postMetaIcon.innerHTML = `<div class="profile-pic-default">
+                                        <span">${nameInitials}</span>
+                                    </div>`
+    }
     post.append(postHeader);
 
     const postText = document.createElement("div");
     postText.classList.add("post__text");
     postText.textContent = element.content;
     post.append(postText);
-
+    
     const postImage = document.createElement("div");
     postImage.classList.add("post__image");
     postImage.innerHTML = `
@@ -161,7 +173,6 @@ function likeBtn(event) {
         postsLiked = postsLiked.filter(element => element !== thisPost);
         likeCounter.textContent = parseInt(likeCounter.textContent) - 1;
     }
-    console.log(postsLiked);
 }
 
 
